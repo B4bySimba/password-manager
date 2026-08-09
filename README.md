@@ -2,7 +2,7 @@
 
 A zero-knowledge password manager in Go. The vault file is an authenticated binary format
 whose *every* field - including entry titles - is inside the encryption envelope. The
-master key comes from **scrypt written from scratch** against RFC 7914, content is
+master key comes from scrypt written from scratch against RFC 7914, content is
 AES-256-GCM with per-entry nonces, and rewriting the KDF parameters in the file to make
 cracking cheap produces an error rather than a weak vault.
 
@@ -70,42 +70,44 @@ the estimator reverses the substitutions and prices it at 3.
 
 ## Feature checklist
 
-**Cryptography** - ✅ **scrypt from scratch** (Salsa20/8 → BlockMix → ROMix), verified
-against the RFC 7914 §12 vectors and the §8 core vector · ✅ AES-256-GCM · ✅ per-entry
-random nonces · ✅ HKDF subkeys with versioned domain-separation labels · ✅ HMAC-SHA256
-over the header · ✅ constant-time comparison · ✅ bounds-checked KDF parameters
+**Cryptography** - scrypt from scratch (Salsa20/8 → BlockMix → ROMix), verified
+against the RFC 7914 §12 vectors and the §8 core vector · AES-256-GCM · per-entry
+random nonces · HKDF subkeys with versioned domain-separation labels · HMAC-SHA256
+over the header · constant-time comparison · bounds-checked KDF parameters
 
-**Vault format** - ✅ versioned binary format, byte layout documented in
-[docs/design.md](docs/design.md) · ✅ random vault key wrapped by the password-derived key,
-so rotation is **O(1)** · ✅ whole header as AEAD associated data · ✅ per-entry AAD binding
-a sealed secret to its id · ✅ atomic saves (temp + fsync + rename) · ✅ 0600 throughout ·
-✅ hostile-input parsing with no allocation sized by an untrusted field
+**Vault format** - versioned binary format, byte layout documented in
+[docs/design.md](docs/design.md) · random vault key wrapped by the password-derived key,
+so rotation is O(1) · whole header as AEAD associated data · per-entry AAD binding
+a sealed secret to its id · atomic saves (temp + fsync + rename) · 0600 throughout ·
+hostile-input parsing with no allocation sized by an untrusted field
 
-**Entries** - ✅ logins, notes, cards · ✅ folders and tags · ✅ TOTP secrets ·
-✅ metadata/secret split so `list` and `search` decrypt nothing · ✅ ranked search with
-match reasons · ✅ id, id-prefix and title resolution, with ambiguity refused
+**Entries** - logins, notes, cards · folders and tags · TOTP secrets ·
+metadata/secret split so `list` and `search` decrypt nothing · ranked search with
+match reasons · id, id-prefix and title resolution, with ambiguity refused
 
-**CLI** - ✅ `init` `unlock` `lock` `status` `add` `get` `list` `search` `edit` `rm`
+**CLI** - `init` `unlock` `lock` `status` `add` `get` `list` `search` `edit` `rm`
 `generate` `strength` `totp` `check` `import` `export` `backup` `rotate-master` `help` ·
-✅ no-echo password prompts via termios · ✅ auto-lock with a sliding window ·
-✅ clipboard copy with conditional clear · ✅ SIGINT/SIGTERM cancel cleanly ·
-✅ distinguishable exit codes · ✅ config from env with a `.env.example`
+no-echo password prompts via termios · auto-lock with a sliding window ·
+clipboard copy with conditional clear · SIGINT/SIGTERM cancel cleanly ·
+distinguishable exit codes · config from env with a `.env.example`
 
-**Tools** - ✅ unbiased generator (rejection sampling, chi-squared tested) ·
-✅ passphrases with honest entropy arithmetic · ✅ pattern-based strength estimator ·
-✅ RFC 4226/6238 TOTP with `otpauth://` parsing · ✅ HIBP k-anonymity, off by default,
-mocked in tests · ✅ CSV import mapping Bitwarden/Chrome/1Password/LastPass headers ·
-✅ CSV export gated behind `--i-understand` · ✅ encrypted backup that needs no password
+**Tools** - unbiased generator (rejection sampling, chi-squared tested) ·
+passphrases with honest entropy arithmetic · pattern-based strength estimator ·
+RFC 4226/6238 TOTP with `otpauth://` parsing · HIBP k-anonymity, off by default,
+mocked in tests · CSV import mapping Bitwarden/Chrome/1Password/LastPass headers ·
+CSV export gated behind `--i-understand` · encrypted backup that needs no password
 
-- ⬜ **Argon2id** - the current recommendation; a second hand-written KDF for the same
+Not built:
+
+- **Argon2id** - the current recommendation; a second hand-written KDF for the same
   lesson. The format reserves a KDF identifier byte for it.
-- ⬜ **A resident agent** holding keys in `mlock`ed memory instead of a session file. The
+- **A resident agent** holding keys in `mlock`ed memory instead of a session file. The
   single biggest available improvement, and a different program.
-- ⬜ **The 7776-word EFF list** - a data decision, not an engineering one. Entropy is
+- **The 7776-word EFF list** - a data decision, not an engineering one. Entropy is
   computed from `len(Wordlist)`, so swapping it in updates every reported figure.
-- ⬜ **Full zxcvbn segmentation** (minimum-guess search) and its 30k dictionary.
-- ⬜ **Sync and multi-device merge** - a distributed-systems problem in disguise.
-- ⬜ **FIDO2 `hmac-secret`** as a second KDF factor - needs hardware to test honestly.
+- **Full zxcvbn segmentation** (minimum-guess search) and its 30k dictionary.
+- **Sync and multi-device merge** - a distributed-systems problem in disguise.
+- **FIDO2 `hmac-secret`** as a second KDF factor - needs hardware to test honestly.
 
 ## API reference
 
@@ -159,13 +161,12 @@ master password
           per-entry sealed secrets                     the whole payload envelope
           (own nonce, AAD = entry id)                  (own nonce, AAD = header)
 
-
 file:  [ magic | ver | kdf | N r p | salt | wrapNonce | wrappedKey |
          payloadNonce | headerMAC | payloadLen ]  ← all of this is the AAD
        [ ciphertext ]
 ```
 
-Content is encrypted under a **random** vault key that the password merely wraps. That is
+Content is encrypted under a random vault key that the password merely wraps. That is
 why changing the master password rewraps 48 bytes instead of re-encrypting every entry,
 and why a test can assert the sealed blobs are byte-identical after rotation.
 
@@ -198,7 +199,7 @@ and why a test can assert the sealed blobs are byte-identical after rotation.
 |---|---|
 | scrypt N=4096 r=8 p=1 | 18ms, 4 MiB scratch - 214 days per billion guesses |
 | scrypt N=16384 r=8 p=1 | 71ms, 16 MiB - 2 years per billion guesses |
-| scrypt **N=65536 r=8 p=1** (default) | 272ms, 64 MiB - **9 years per billion guesses** |
+| scrypt N=65536 r=8 p=1 (default) | 272ms, 64 MiB - 9 years per billion guesses |
 | Master-password rotation, 4 entries | 87ms - and the same for 50,000 |
 | Generator uniformity, 240k draws over 24 symbols | χ² = 18.4 (99.9th percentile is 49.7) |
 | Vault size, 4 entries | 1492 bytes = 166 header + 1326 payload |
@@ -228,7 +229,7 @@ From the standard library: `crypto/aes`, `crypto/cipher` (AES-256-GCM), `crypto/
 `crypto/pbkdf2` and `crypto/hkdf` (both stdlib since Go 1.24), `encoding/base32`,
 `encoding/csv`, `syscall` for termios.
 
-Written by hand rather than imported: **scrypt** (`golang.org/x/crypto/scrypt` - this is
+Written by hand rather than imported: scrypt (`golang.org/x/crypto/scrypt` - this is
 the thing the project exists to teach), the vault format, TOTP
 (`github.com/pquerna/otp`), the password generator and strength estimator
 (`github.com/nbutton23/zxcvbn-go`), the HIBP client, CSV column mapping, the CLI

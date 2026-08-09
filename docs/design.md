@@ -106,7 +106,7 @@ The two PBKDF2 calls use a single iteration deliberately. They are there to spre
 
 ## Atomic saves
 
-Temp file in the same directory → `chmod 0600` → write → **fsync** → close → `rename`. Rename within a directory is atomic on POSIX, so a crash leaves either the old vault or the new one.
+Temp file in the same directory → `chmod 0600` → write → fsync → close → `rename`. Rename within a directory is atomic on POSIX, so a crash leaves either the old vault or the new one.
 
 The fsync is not optional. Without it the rename can land before the data does, and a power loss leaves a correctly named, empty vault - which for a password manager means every credential the user owns, gone. A test asserts no temp files survive a successful save.
 
@@ -148,7 +148,7 @@ The passphrase generator reports entropy as `words × log2(len(wordlist))` and *
 
 The k-anonymity range API is what makes this safe to ship: the client sends five hex characters of the password's SHA-1 and receives ~800 suffixes sharing that prefix. Comparison happens locally. The server learns a bucket covering about one 1,048,576th of the hash space.
 
-It is still a network request that only happens because the user has a specific password, so it is **off by default**. Disabled returns `ErrDisabled` rather than "not breached" - confusing "we did not look" with "we looked and it was clean" is how a compromised password survives an audit.
+It is still a network request that only happens because the user has a specific password, so it is off by default. Disabled returns `ErrDisabled` rather than "not breached" - confusing "we did not look" with "we looked and it was clean" is how a compromised password survives an audit.
 
 `Add-Padding: true` is sent so an observer watching response sizes cannot narrow down the bucket. Every returned line is scanned even after a match, so the timing does not reveal where in the response the password appeared.
 
@@ -162,7 +162,7 @@ The dangerous part is restoring it: a process that dies between disabling and re
 
 Reading is one byte at a time. A buffered read would be faster and would also consume past the newline into whatever comes next on the pipe - which for a password prompt means swallowing the user's next command.
 
-On platforms where this is not implemented, the prompt **refuses** rather than reading with echo on. Printing a master password to the screen because a build tag did not match is the kind of silent downgrade this project avoids everywhere else.
+On platforms where this is not implemented, the prompt refuses rather than reading with echo on. Printing a master password to the screen because a build tag did not match is the kind of silent downgrade this project avoids everywhere else.
 
 ## Errors the CLI distinguishes
 
@@ -172,13 +172,13 @@ Exit codes follow: 1 general, 2 usage, 3 wrong password, 4 locked, 5 not found, 
 
 ## What I skipped
 
-- ⬜ **Argon2id.** scrypt is implemented from scratch; Argon2id is the current recommendation and would mean a second hand-written KDF for the same lesson. The format has a KDF identifier byte reserved for it.
-- ⬜ **A resident agent** holding keys in `mlock`ed memory, instead of a session file. This is the single biggest available improvement and it is a different program - a daemon with a socket protocol.
-- ⬜ **The 7776-word EFF list.** A data-sourcing decision rather than an engineering one. `PassphraseEntropy` computes from `len(Wordlist)`, so swapping it in is one edit and every reported figure follows.
-- ⬜ **Full zxcvbn segmentation** (minimum-guess search over all splits) and its 30,000-word dictionary.
-- ⬜ **Sync, sharing, and multi-device merge.** A vault with two writers needs conflict resolution, which is a distributed-systems problem wearing a password manager's clothes.
-- ⬜ **Hardware token support** (FIDO2 `hmac-secret` as a second factor to the KDF). Genuinely valuable, and needs hardware in CI to test honestly.
-- ⬜ **Secure deletion of the underlying blocks.** On a copy-on-write or flash-translated filesystem, overwriting a file does not overwrite the sectors. Only full-disk encryption addresses this.
+- **Argon2id.** scrypt is implemented from scratch; Argon2id is the current recommendation and would mean a second hand-written KDF for the same lesson. The format has a KDF identifier byte reserved for it.
+- **A resident agent** holding keys in `mlock`ed memory, instead of a session file. This is the single biggest available improvement and it is a different program - a daemon with a socket protocol.
+- **The 7776-word EFF list.** A data-sourcing decision rather than an engineering one. `PassphraseEntropy` computes from `len(Wordlist)`, so swapping it in is one edit and every reported figure follows.
+- **Full zxcvbn segmentation** (minimum-guess search over all splits) and its 30,000-word dictionary.
+- **Sync, sharing, and multi-device merge.** A vault with two writers needs conflict resolution, which is a distributed-systems problem wearing a password manager's clothes.
+- **Hardware token support** (FIDO2 `hmac-secret` as a second factor to the KDF). Genuinely valuable, and needs hardware in CI to test honestly.
+- **Secure deletion of the underlying blocks.** On a copy-on-write or flash-translated filesystem, overwriting a file does not overwrite the sectors. Only full-disk encryption addresses this.
 
 ## What production would add
 
