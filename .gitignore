@@ -1,0 +1,8 @@
+# Never commit a vault, a backup, or a plaintext export.
+*.gv
+*.bak
+*.csv
+.env
+
+vault
+/dist/
