@@ -1,10 +1,10 @@
-# Design notes — Password Manager
+# Design notes - Password Manager
 
 ## Threat model
 
 Stated first, because every decision below is downstream of it.
 
-**In scope — what this defends against**
+**In scope - what this defends against**
 
 | Adversary | Defence |
 |---|---|
@@ -15,7 +15,7 @@ Stated first, because every decision below is downstream of it.
 | A weak master password | Strength estimate at `init`, with a warning that quotes the actual crack time |
 | A reused or breached password | Local reuse detection; optional k-anonymity breach lookup |
 
-**Out of scope — what this does *not* defend against**
+**Out of scope - what this does *not* defend against**
 
 - **Malware running as your user.** It can read the session file, ptrace the process, log your keystrokes, and read the clipboard. Nothing a userspace password manager does survives this.
 - **A compromised kernel or a cold-boot attack.** Keys are zeroed where possible, but Go's garbage collector moves memory and the kernel swaps it. See "What zeroing actually achieves".
@@ -48,7 +48,7 @@ Three decisions are load-bearing.
 
 **Fixed offsets, and no allocation sized by an untrusted field.** The header is parsed before any key exists, from a file that may be hostile. `N` is bounds-checked *before* it can be handed to scrypt, because validating it any later would mean allocating gigabytes on an attacker's say-so. The payload length is checked against the actual file size rather than trusted.
 
-**The KDF parameters are stored in the file.** A vault written today still opens after the defaults are raised. The cost is that the parameters are attacker-visible and attacker-editable — which is why they are inside the MAC and the AAD.
+**The KDF parameters are stored in the file.** A vault written today still opens after the defaults are raised. The cost is that the parameters are attacker-visible and attacker-editable - which is why they are inside the MAC and the AAD.
 
 **The whole header is the associated data.** Rewriting `N` from 65536 to 2 to make cracking cheap does not produce a weak vault, it produces `wrong master password`. The demo does exactly this and shows the error.
 
@@ -71,7 +71,7 @@ master password
               (own nonce, AAD = entry id)                       (own nonce, AAD = header)
 ```
 
-**Why a random vault key rather than encrypting content with the password-derived key.** Changing the master password rewraps 48 bytes instead of re-encrypting every entry. Rotation is O(1) in the number of credentials — a vault of 5 and a vault of 50,000 take the same time — and the test asserts the sealed blobs are byte-identical afterwards.
+**Why a random vault key rather than encrypting content with the password-derived key.** Changing the master password rewraps 48 bytes instead of re-encrypting every entry. Rotation is O(1) in the number of credentials - a vault of 5 and a vault of 50,000 take the same time - and the test asserts the sealed blobs are byte-identical afterwards.
 
 **Why HKDF labels.** No two purposes share bytes. If the header-authentication key leaked it must not also decrypt content. The labels are versioned because changing one silently would make every existing vault undecryptable with no useful error.
 
@@ -98,9 +98,9 @@ The second loop is the whole trick. `j` depends on the data, so an attacker who 
 
 `Integerify` reads the final 64-byte block as a little-endian integer mod N. Because N is a power of two this is a mask of one word.
 
-Salsa20/8 is deliberately weak by cipher standards. scrypt needs speed and non-linearity, not collision resistance — the security is in the memory access pattern. A stronger mixing function would make the honest user pay more than the attacker.
+Salsa20/8 is deliberately weak by cipher standards. scrypt needs speed and non-linearity, not collision resistance - the security is in the memory access pattern. A stronger mixing function would make the honest user pay more than the attacker.
 
-**How it is verified:** the three practical RFC 7914 §12 vectors, plus the Salsa20/8 core vector from §8. The core is tested separately on purpose — with only top-level vectors, a bug in `salsa208` and a compensating bug in `blockMix` could hide each other. The 1 GiB fourth vector is skipped; it is a reasonable production setting and an unreasonable unit test.
+**How it is verified:** the three practical RFC 7914 §12 vectors, plus the Salsa20/8 core vector from §8. The core is tested separately on purpose - with only top-level vectors, a bug in `salsa208` and a compensating bug in `blockMix` could hide each other. The 1 GiB fourth vector is skipped; it is a reasonable production setting and an unreasonable unit test.
 
 The two PBKDF2 calls use a single iteration deliberately. They are there to spread and collect, not to add cost.
 
@@ -108,7 +108,7 @@ The two PBKDF2 calls use a single iteration deliberately. They are there to spre
 
 Temp file in the same directory → `chmod 0600` → write → **fsync** → close → `rename`. Rename within a directory is atomic on POSIX, so a crash leaves either the old vault or the new one.
 
-The fsync is not optional. Without it the rename can land before the data does, and a power loss leaves a correctly named, empty vault — which for a password manager means every credential the user owns, gone. A test asserts no temp files survive a successful save.
+The fsync is not optional. Without it the rename can land before the data does, and a power loss leaves a correctly named, empty vault - which for a password manager means every credential the user owns, gone. A test asserts no temp files survive a successful save.
 
 ## What zeroing actually achieves
 
@@ -128,19 +128,19 @@ Metadata is stored separately from the sealed secret, so `list` and `search` nev
 
 Entropy computed as `length × log2(alphabet)` is correct for a machine-generated password and a lie for anything a person typed. `P@ssw0rd` scores 52 bits under that formula and is cracked instantly.
 
-So the estimator segments the password into recognised patterns — leaked passwords, dictionary words (with leet substitutions reversed), keyboard walks, sequences, repeats, years — prices each by how many candidates an attacker enumerates to reach it, and multiplies. Unmatched runs fall back to brute force over the classes they use.
+So the estimator segments the password into recognised patterns - leaked passwords, dictionary words (with leet substitutions reversed), keyboard walks, sequences, repeats, years - prices each by how many candidates an attacker enumerates to reach it, and multiplies. Unmatched runs fall back to brute force over the classes they use.
 
 **Score bands are stricter than zxcvbn's.** zxcvbn's 1e3/1e6/1e8/1e10 thresholds are calibrated for an attacker rate-limited by a login form. The threat here is someone grinding your vault file offline, where 1e10 falls in one second. The bands are 1e6/1e10/1e14/1e18; reaching "strong" needs about 60 bits.
 
-**A bug the tests caught.** The leet reversal was only applied against the dictionary, not against the leaked-password list. `P@ssw0rd` — the canonical example of a password people believe they have disguised — therefore matched nothing and was priced as eight random characters, scoring "strong". Both lists now go through the substitution rules.
+**A bug the tests caught.** The leet reversal was only applied against the dictionary, not against the leaked-password list. `P@ssw0rd` - the canonical example of a password people believe they have disguised - therefore matched nothing and was priced as eight random characters, scoring "strong". Both lists now go through the substitution rules.
 
 **Documented limitation.** Segmentation is greedy longest-match, not a minimum-guess search over all segmentations, and the bundled lists are small (256 words, ~120 leaked passwords). Both cause the estimator to *overrate*, which is the wrong direction to err. `Tr0ub4dor&3` is rated 72 bits here against zxcvbn's ~28, purely because "troubador" is not in the list. A test asserts this so that enlarging the wordlist forces the README claim to be updated with it.
 
 ## Unbiased generation
 
-Selection uses rejection sampling, not `rand % len(alphabet)`. Modulo folds 256 byte values unevenly onto an alphabet whose size does not divide 256, making some characters measurably more likely — a real, exploitable narrowing of the search space. A chi-squared test over a 24-character alphabet asserts the distribution is flat.
+Selection uses rejection sampling, not `rand % len(alphabet)`. Modulo folds 256 byte values unevenly onto an alphabet whose size does not divide 256, making some characters measurably more likely - a real, exploitable narrowing of the search space. A chi-squared test over a 24-character alphabet asserts the distribution is flat.
 
-`RequireEach` places one character per class and then shuffles the whole string with Fisher-Yates. The common shortcut — placing the guaranteed characters at fixed positions — means position 0 is always lowercase, which is information an attacker gets for free. A test draws 400 four-character passwords and requires all four classes to have appeared at position 0.
+`RequireEach` places one character per class and then shuffles the whole string with Fisher-Yates. The common shortcut - placing the guaranteed characters at fixed positions - means position 0 is always lowercase, which is information an attacker gets for free. A test draws 400 four-character passwords and requires all four classes to have appeared at position 0.
 
 The passphrase generator reports entropy as `words × log2(len(wordlist))` and *only* that. Capitalisation and a trailing digit are credited at their true worth (0 and 3.3 bits) because the generator's rules are public.
 
@@ -148,7 +148,7 @@ The passphrase generator reports entropy as `words × log2(len(wordlist))` and *
 
 The k-anonymity range API is what makes this safe to ship: the client sends five hex characters of the password's SHA-1 and receives ~800 suffixes sharing that prefix. Comparison happens locally. The server learns a bucket covering about one 1,048,576th of the hash space.
 
-It is still a network request that only happens because the user has a specific password, so it is **off by default**. Disabled returns `ErrDisabled` rather than "not breached" — confusing "we did not look" with "we looked and it was clean" is how a compromised password survives an audit.
+It is still a network request that only happens because the user has a specific password, so it is **off by default**. Disabled returns `ErrDisabled` rather than "not breached" - confusing "we did not look" with "we looked and it was clean" is how a compromised password survives an audit.
 
 `Add-Padding: true` is sent so an observer watching response sizes cannot narrow down the bucket. Every returned line is scanned even after a match, so the timing does not reveal where in the response the password appeared.
 
@@ -156,24 +156,24 @@ Reuse detection is entirely local: it compares full SHA-1 hashes in-process, so 
 
 ## Terminal echo
 
-Hiding a password means asking the *terminal driver* to stop echoing — the kernel prints your keystrokes before the process ever sees them, so there is no way to do it from inside the program's own I/O. That is three ioctls (`TCGETS`/`TCSETS` on Linux, `TIOCGETA`/`TIOCSETA` on the BSDs), which is why there is no dependency here.
+Hiding a password means asking the *terminal driver* to stop echoing - the kernel prints your keystrokes before the process ever sees them, so there is no way to do it from inside the program's own I/O. That is three ioctls (`TCGETS`/`TCSETS` on Linux, `TIOCGETA`/`TIOCSETA` on the BSDs), which is why there is no dependency here.
 
 The dangerous part is restoring it: a process that dies between disabling and restoring echo leaves the user with an invisible shell. Hence the deferred restore and `signal.NotifyContext` in `main`.
 
-Reading is one byte at a time. A buffered read would be faster and would also consume past the newline into whatever comes next on the pipe — which for a password prompt means swallowing the user's next command.
+Reading is one byte at a time. A buffered read would be faster and would also consume past the newline into whatever comes next on the pipe - which for a password prompt means swallowing the user's next command.
 
 On platforms where this is not implemented, the prompt **refuses** rather than reading with echo on. Printing a master password to the screen because a build tag did not match is the kind of silent downgrade this project avoids everywhere else.
 
 ## Errors the CLI distinguishes
 
-`Open` verifies the header MAC *before* attempting the payload. Both would fail on a wrong password, but checking the MAC first turns "GCM said no" into the actionable message "wrong master password" — and reserves "corrupt" for the case where the password was right and the bytes were not.
+`Open` verifies the header MAC *before* attempting the payload. Both would fail on a wrong password, but checking the MAC first turns "GCM said no" into the actionable message "wrong master password" - and reserves "corrupt" for the case where the password was right and the bytes were not.
 
 Exit codes follow: 1 general, 2 usage, 3 wrong password, 4 locked, 5 not found, 130 interrupted. Scripts can branch on them.
 
 ## What I skipped
 
 - ⬜ **Argon2id.** scrypt is implemented from scratch; Argon2id is the current recommendation and would mean a second hand-written KDF for the same lesson. The format has a KDF identifier byte reserved for it.
-- ⬜ **A resident agent** holding keys in `mlock`ed memory, instead of a session file. This is the single biggest available improvement and it is a different program — a daemon with a socket protocol.
+- ⬜ **A resident agent** holding keys in `mlock`ed memory, instead of a session file. This is the single biggest available improvement and it is a different program - a daemon with a socket protocol.
 - ⬜ **The 7776-word EFF list.** A data-sourcing decision rather than an engineering one. `PassphraseEntropy` computes from `len(Wordlist)`, so swapping it in is one edit and every reported figure follows.
 - ⬜ **Full zxcvbn segmentation** (minimum-guess search over all splits) and its 30,000-word dictionary.
 - ⬜ **Sync, sharing, and multi-device merge.** A vault with two writers needs conflict resolution, which is a distributed-systems problem wearing a password manager's clothes.
@@ -182,4 +182,4 @@ Exit codes follow: 1 general, 2 usage, 3 wrong password, 4 locked, 5 not found, 
 
 ## What production would add
 
-An audited third-party review — hand-rolled crypto that has not been attacked by anyone but its author should be treated as a learning exercise, which is what this is. Beyond that: Argon2id with parameters calibrated at install time on the actual machine, the agent process, a FIDO2 second factor, encrypted sync with conflict resolution, and a signed release pipeline so the binary a user runs is the code in this repository.
+An audited third-party review - hand-rolled crypto that has not been attacked by anyone but its author should be treated as a learning exercise, which is what this is. Beyond that: Argon2id with parameters calibrated at install time on the actual machine, the agent process, a FIDO2 second factor, encrypted sync with conflict resolution, and a signed release pipeline so the binary a user runs is the code in this repository.

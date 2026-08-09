@@ -119,7 +119,7 @@ func withLength(o pwgen.Options, n int) pwgen.Options { o.Length = n; return o }
 
 func warnIfWeak(a *App, password string) {
 	if s := pwgen.Estimate(password); s.Score < 2 {
-		fmt.Fprintf(a.Err, "warning: that password is rated %s — cracked in %s against a fast hash.\n", s.Label, s.CrackTimeOffline)
+		fmt.Fprintf(a.Err, "warning: that password is rated %s - cracked in %s against a fast hash.\n", s.Label, s.CrackTimeOffline)
 	}
 }
 
@@ -220,7 +220,7 @@ func printEntry(a *App, e vault.Entry, reveal bool) {
 			row("password", strings.Repeat("•", len(e.Secret.Password))+"   (--reveal, --copy or --raw)")
 		}
 		s := pwgen.Estimate(e.Secret.Password)
-		row("strength", fmt.Sprintf("%s, %.0f bits — %s against a fast hash", s.Label, s.Entropy, s.CrackTimeOffline))
+		row("strength", fmt.Sprintf("%s, %.0f bits - %s against a fast hash", s.Label, s.Entropy, s.CrackTimeOffline))
 	}
 	if e.Secret.TOTPSecret != "" {
 		if cfg, err := parseTOTP(e.Secret.TOTPSecret); err == nil {
@@ -280,7 +280,7 @@ func copyToClipboard(ctx context.Context, a *App, value string, wait bool) error
 		if err := cb.Copy(ctx, value); err != nil {
 			return err
 		}
-		fmt.Fprintf(a.Out, "Copied via %s. It will NOT be cleared automatically — --wait=false was passed.\n", cb.Name())
+		fmt.Fprintf(a.Out, "Copied via %s. It will NOT be cleared automatically - --wait=false was passed.\n", cb.Name())
 		return nil
 	}
 
@@ -453,7 +453,7 @@ func cmdEdit(ctx context.Context, a *App, args []string) error {
 	}
 
 	// Clearing is separate from setting because an empty flag value cannot mean "blank
-	// this field" — that would make `--note ""` indistinguishable from omitting it.
+	// this field" - that would make `--note ""` indistinguishable from omitting it.
 	for _, field := range strings.Split(f.clear, ",") {
 		switch strings.TrimSpace(strings.ToLower(field)) {
 		case "":

@@ -12,7 +12,7 @@ import (
 //
 // Echo is a property of the *terminal driver*, not of the program: the kernel is what
 // prints your keystrokes back, before the process ever sees them. So hiding a password
-// means asking the driver to stop, which is an ioctl on the tty — there is no way to do
+// means asking the driver to stop, which is an ioctl on the tty - there is no way to do
 // it from inside the program's own I/O.
 //
 // The dangerous part is restoring it. If the process dies between disabling echo and

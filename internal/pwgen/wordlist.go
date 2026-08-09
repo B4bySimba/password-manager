@@ -2,7 +2,7 @@ package pwgen
 
 // Wordlist backs passphrase generation and the dictionary check in Estimate.
 //
-// It is exactly 256 words, which is 8 bits per word — a round number chosen so the
+// It is exactly 256 words, which is 8 bits per word - a round number chosen so the
 // entropy arithmetic is transparent rather than approximate. Words are 3-7 letters,
 // unambiguous when spoken, and share no prefixes long enough to confuse a reader.
 //

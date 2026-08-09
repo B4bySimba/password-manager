@@ -43,7 +43,7 @@ var ErrNoSession = errors.New("session: no active session")
 //
 // It holds the two derived keys, never the master password. That distinction is worth
 // the extra field: an attacker who reads a session file can open and modify this vault,
-// but cannot try the master password against the user's other accounts — which is the
+// but cannot try the master password against the user's other accounts - which is the
 // damage that actually spreads.
 type Session struct {
 	VaultPath string    `json:"vaultPath"`
@@ -103,7 +103,7 @@ func (s *Store) Start(vaultPath string, key, macKey []byte, ttl time.Duration) e
 	if err := os.MkdirAll(s.Dir, DirMode); err != nil {
 		return fmt.Errorf("session: create %s: %w", s.Dir, err)
 	}
-	// MkdirAll leaves an existing directory's mode alone, so tighten it explicitly —
+	// MkdirAll leaves an existing directory's mode alone, so tighten it explicitly -
 	// otherwise a pre-existing world-readable directory silently defeats the file mode.
 	if err := os.Chmod(s.Dir, DirMode); err != nil {
 		return fmt.Errorf("session: chmod %s: %w", s.Dir, err)
@@ -174,7 +174,7 @@ func (s *Store) Refresh(vaultPath string, ttl time.Duration) error {
 	return s.Start(vaultPath, sess.Key, sess.MACKey, ttl)
 }
 
-// End removes the session. Missing is success — `lock` must be idempotent.
+// End removes the session. Missing is success - `lock` must be idempotent.
 func (s *Store) End(vaultPath string) error {
 	if err := os.Remove(s.path(vaultPath)); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return fmt.Errorf("session: remove session file: %w", err)

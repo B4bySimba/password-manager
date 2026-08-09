@@ -75,7 +75,7 @@ func cmdInit(_ context.Context, a *App, args []string) error {
 	elapsed := time.Since(start)
 
 	fmt.Fprintf(a.Out, "Vault created: %s\n", a.Config.VaultPath)
-	fmt.Fprintf(a.Out, "  scrypt N=%d r=%d p=%d — key derivation took %s\n", params.N, params.R, params.P, elapsed.Truncate(time.Millisecond))
+	fmt.Fprintf(a.Out, "  scrypt N=%d r=%d p=%d - key derivation took %s\n", params.N, params.R, params.P, elapsed.Truncate(time.Millisecond))
 	fmt.Fprintf(a.Out, "  Every unlock pays that cost once. So does every guess an attacker makes.\n")
 	return nil
 }
@@ -128,7 +128,7 @@ func cmdStatus(_ context.Context, a *App, _ []string) error {
 	info, err := os.Stat(a.Config.VaultPath)
 	switch {
 	case errors.Is(err, fs.ErrNotExist):
-		fmt.Fprintln(a.Out, "state       does not exist — run `vault init`")
+		fmt.Fprintln(a.Out, "state       does not exist - run `vault init`")
 		return nil
 	case err != nil:
 		return fmt.Errorf("stat vault: %w", err)
@@ -155,7 +155,7 @@ func enabledWord(b bool) string {
 	if b {
 		return "enabled (VAULT_HIBP)"
 	}
-	return "disabled — pass --online to check one password"
+	return "disabled - pass --online to check one password"
 }
 
 func cmdRotateMaster(_ context.Context, a *App, args []string) error {
@@ -205,7 +205,7 @@ func cmdRotateMaster(_ context.Context, a *App, args []string) error {
 		a.Log.Warn("could not clear session after rotation", "err", err)
 	}
 
-	fmt.Fprintf(a.Out, "Master password changed. %d entries were not re-encrypted — they never had to be.\n", v.Len())
+	fmt.Fprintf(a.Out, "Master password changed. %d entries were not re-encrypted - they never had to be.\n", v.Len())
 	fmt.Fprintf(a.Out, "The random vault key was rewrapped under the new password; scrypt now runs with N=%d r=%d p=%d.\n", params.N, params.R, params.P)
 	return nil
 }

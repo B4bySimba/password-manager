@@ -49,7 +49,7 @@ func TestLevelFiltering(t *testing.T) {
 	}
 }
 
-// LevelOff must silence errors too — a password manager that prints diagnostics into a
+// LevelOff must silence errors too - a password manager that prints diagnostics into a
 // piped stdout consumer breaks scripting, so "off" has to mean off.
 func TestLevelOffSilencesEverything(t *testing.T) {
 	l, buf := newTestLogger(LevelOff)

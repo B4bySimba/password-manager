@@ -60,7 +60,7 @@ func Password(prompt string) ([]byte, error) {
 }
 
 // PasswordConfirmed prompts twice and requires a match, for anything that sets a
-// password rather than checks one. A typo'd master password on `init` is unrecoverable —
+// password rather than checks one. A typo'd master password on `init` is unrecoverable -
 // there is no reset link for a file encrypted with a key nobody has.
 func PasswordConfirmed(prompt, confirmPrompt string) ([]byte, error) {
 	first, err := Password(prompt)

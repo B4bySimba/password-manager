@@ -3,7 +3,7 @@
 //
 // The protocol is the whole reason this is safe to ship in a password manager: the
 // client sends the first five hex characters of the password's SHA-1 and receives every
-// suffix sharing that prefix — roughly 800 hashes. The comparison happens locally. The
+// suffix sharing that prefix - roughly 800 hashes. The comparison happens locally. The
 // server learns a bucket containing about one 1,048,576th of the hash space and never
 // sees the password, the full hash, or which of the returned suffixes matched.
 //
@@ -61,7 +61,7 @@ func New(enabled bool) *Checker {
 type Result struct {
 	Breached bool
 	Count    int    // times seen across known breaches
-	Prefix   string // the five characters that were sent — printable, so the privacy claim is checkable
+	Prefix   string // the five characters that were sent - printable, so the privacy claim is checkable
 	Bucket   int    // suffixes returned, i.e. the size of the anonymity set
 }
 
@@ -102,7 +102,7 @@ func (c *Checker) Check(ctx context.Context, password string) (Result, error) {
 }
 
 // HashPrefix returns the 5-character prefix that is sent and the 35-character suffix
-// that is kept. Exported so a caller — or a suspicious user — can verify by inspection
+// that is kept. Exported so a caller - or a suspicious user - can verify by inspection
 // exactly what would go over the wire.
 func HashPrefix(password string) (prefix, suffix string) {
 	sum := sha1.Sum([]byte(password))

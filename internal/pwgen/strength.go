@@ -10,7 +10,7 @@ import (
 // Strength is the result of estimating a human-chosen password.
 type Strength struct {
 	Guesses     float64  // estimated guesses an attacker needs, on average
-	Entropy     float64  // log2(Guesses) — comparable with GeneratedEntropy
+	Entropy     float64  // log2(Guesses) - comparable with GeneratedEntropy
 	Score       int      // 0 (terrible) to 4 (strong)
 	Label       string   // human-readable score
 	Patterns    []string // what the estimator recognised, in order
@@ -41,7 +41,7 @@ const (
 //
 // Simplification versus real zxcvbn, stated plainly: segmentation here is greedy
 // longest-match left to right, not a minimum-guess search over all segmentations. Greedy
-// can overprice a password whose optimal split differs — it errs toward "stronger",
+// can overprice a password whose optimal split differs - it errs toward "stronger",
 // which is the wrong direction to err, so the README marks full search as not done.
 func Estimate(password string) Strength {
 	if password == "" {
@@ -215,8 +215,8 @@ func matchCommon(lower string, i int) (match, int) {
 		leetUsed := false
 		if idx < 0 {
 			// The leaked-password list must be consulted through the leet rules too, not
-			// just the dictionary. Without this, "P@ssw0rd" — which is the canonical
-			// example of a password people believe they have disguised — matches nothing
+			// just the dictionary. Without this, "P@ssw0rd" - which is the canonical
+			// example of a password people believe they have disguised - matches nothing
 			// and gets priced as eight random characters.
 			if plain := leet.Replace(candidate); plain != candidate {
 				idx = commonIndex(plain)

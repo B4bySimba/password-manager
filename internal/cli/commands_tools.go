@@ -39,7 +39,7 @@ func cmdGenerate(_ context.Context, a *App, args []string) error {
 		fmt.Fprintf(a.Err, "%d words from a %d-word list: %.0f bits.\n",
 			f.passphrase, len(pwgen.Wordlist), pwgen.PassphraseEntropy(f.passphrase, f.digit))
 		if f.capitalize {
-			fmt.Fprintln(a.Err, "Capitalisation adds no entropy — the rule is public, so an attacker applies it too.")
+			fmt.Fprintln(a.Err, "Capitalisation adds no entropy - the rule is public, so an attacker applies it too.")
 		}
 		return nil
 	}
@@ -75,8 +75,8 @@ func cmdStrength(_ context.Context, a *App, args []string) error {
 	s := pwgen.Estimate(password)
 	fmt.Fprintf(a.Out, "score      %d/4  (%s)\n", s.Score, s.Label)
 	fmt.Fprintf(a.Out, "entropy    %.1f bits (%.3g guesses)\n", s.Entropy, s.Guesses)
-	fmt.Fprintf(a.Out, "cracked in %s   at 10^10 guesses/s — a leaked fast hash\n", s.CrackTimeOffline)
-	fmt.Fprintf(a.Out, "           %s   at 10^4 guesses/s — the same hash behind scrypt\n", s.CrackTimeSlowKDF)
+	fmt.Fprintf(a.Out, "cracked in %s   at 10^10 guesses/s - a leaked fast hash\n", s.CrackTimeOffline)
+	fmt.Fprintf(a.Out, "           %s   at 10^4 guesses/s - the same hash behind scrypt\n", s.CrackTimeSlowKDF)
 	if len(s.Patterns) > 0 {
 		fmt.Fprintln(a.Out, "patterns")
 		for _, p := range s.Patterns {
@@ -317,7 +317,7 @@ func cmdImport(ctx context.Context, a *App, args []string) error {
 	}
 	fmt.Fprintf(a.Out, "Imported %d entries (%d skipped). Vault went from %d to %d.\n",
 		report.Imported, report.Skipped, before, v.Len())
-	fmt.Fprintln(a.Err, "Delete the source CSV — it holds every password in plaintext.")
+	fmt.Fprintln(a.Err, "Delete the source CSV - it holds every password in plaintext.")
 	return nil
 }
 

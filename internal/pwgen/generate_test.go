@@ -94,7 +94,7 @@ func TestRequireEachDoesNotFixPositions(t *testing.T) {
 		seenAtZero[classOf(p[0])] = true
 	}
 	if len(seenAtZero) < 4 {
-		t.Fatalf("position 0 only ever held %d of the 4 classes: %v — the guaranteed characters are not being shuffled", len(seenAtZero), keys(seenAtZero))
+		t.Fatalf("position 0 only ever held %d of the 4 classes: %v - the guaranteed characters are not being shuffled", len(seenAtZero), keys(seenAtZero))
 	}
 }
 
@@ -144,7 +144,7 @@ func TestGeneratedPasswordsDoNotRepeat(t *testing.T) {
 			t.Fatal(err)
 		}
 		if seen[p] {
-			t.Fatalf("generated %q twice in 500 draws — the source is not random", p)
+			t.Fatalf("generated %q twice in 500 draws - the source is not random", p)
 		}
 		seen[p] = true
 	}
@@ -259,7 +259,7 @@ func TestWordlistIsExactlyEightBitsAndUnique(t *testing.T) {
 	seen := map[string]bool{}
 	for i, w := range Wordlist {
 		if seen[w] {
-			t.Errorf("duplicate word %q at index %d — duplicates silently reduce entropy", w, i)
+			t.Errorf("duplicate word %q at index %d - duplicates silently reduce entropy", w, i)
 		}
 		seen[w] = true
 		if len(w) < 3 {

@@ -3,7 +3,7 @@
 // The clipboard is the least secure part of this program and there is no version of it
 // that is not. Any process on the desktop can read it without a prompt, browser pages can
 // read it on paste, and several platforms sync it to other devices. It exists because the
-// alternative — a password printed to a terminal that scrolls into a logged session — is
+// alternative - a password printed to a terminal that scrolls into a logged session - is
 // worse for the common case.
 //
 // What can be done is done: the value is cleared after a timeout, and it is cleared only
@@ -21,7 +21,7 @@ import (
 )
 
 // ErrUnavailable means no clipboard tool was found. Callers must handle it rather than
-// assume the copy worked — silently doing nothing here means a user who thinks their
+// assume the copy worked - silently doing nothing here means a user who thinks their
 // password is on the clipboard and pastes whatever was there before.
 var ErrUnavailable = errors.New("clipboard: no clipboard utility found")
 
@@ -88,7 +88,7 @@ func (c *Clipboard) Read(ctx context.Context) (string, bool) {
 //
 // The clear is conditional: if the clipboard no longer holds our value, someone copied
 // something else and wiping it would be a surprising data loss. When the backend cannot
-// read the clipboard (clip.exe), the clear is unconditional — an unrecoverable clipboard
+// read the clipboard (clip.exe), the clear is unconditional - an unrecoverable clipboard
 // is a smaller harm than a password left sitting in it.
 //
 // Cancelling ctx clears immediately, which is what Ctrl-C should do: the user is

@@ -65,7 +65,7 @@ type Entry struct {
 	Secret   Secret    `json:"secret"`
 }
 
-// Metadata is an entry without its secret — what list and search operate on.
+// Metadata is an entry without its secret - what list and search operate on.
 type Metadata struct {
 	ID       string    `json:"id"`
 	Kind     Kind      `json:"kind"`
@@ -104,7 +104,7 @@ func (s *storedEntry) metadata() Metadata {
 
 // entryAAD binds a sealed secret to the entry it belongs to. Without it, someone with
 // write access to the vault file could swap the sealed blob from a low-value entry into
-// a high-value one — every blob is valid under the same vault key, so the AEAD alone
+// a high-value one - every blob is valid under the same vault key, so the AEAD alone
 // would happily accept it. The AAD makes the ciphertext refuse to move.
 func entryAAD(id string) []byte { return []byte("govault:v1:entry:" + id) }
 
@@ -159,7 +159,7 @@ func (e *Entry) Validate() error {
 
 // Zero overwrites the secret strings this entry is holding.
 //
-// Go strings are immutable, so this cannot actually scrub them — the backing array is
+// Go strings are immutable, so this cannot actually scrub them - the backing array is
 // shared and may be interned. What it does is drop the references, so the values become
 // collectable immediately instead of living as long as the Entry does. The honest
 // summary: byte slices can be wiped, strings can only be released.

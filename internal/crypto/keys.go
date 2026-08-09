@@ -58,7 +58,7 @@ func Subkey(master []byte, label string) ([]byte, error) {
 // nonce||ciphertext||tag. The nonce is prepended rather than tracked separately because
 // a nonce that can drift away from its ciphertext eventually will.
 //
-// GCM nonce reuse under a fixed key is catastrophic — it leaks the XOR of two plaintexts
+// GCM nonce reuse under a fixed key is catastrophic - it leaks the XOR of two plaintexts
 // and, worse, the authentication subkey. With 96-bit random nonces the birthday bound
 // permits roughly 2^32 messages per key before the risk becomes non-negligible, which is
 // far beyond anything a local vault will do.

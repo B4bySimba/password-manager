@@ -26,7 +26,7 @@ func TestHOTPRFC4226Vectors(t *testing.T) {
 }
 
 // RFC 6238 Appendix B, all three algorithms. The seeds differ per algorithm because the
-// RFC's reference implementation pads the seed to the hash's block size — a detail that
+// RFC's reference implementation pads the seed to the hash's block size - a detail that
 // trips up every implementation that assumes one shared secret.
 func TestTOTPRFC6238Vectors(t *testing.T) {
 	seeds := map[Algorithm]string{

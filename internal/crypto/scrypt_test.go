@@ -11,7 +11,7 @@ import (
 // be trusted: they are an oracle written by someone else, so they judge the
 // implementation rather than confirming my expectations of it.
 //
-// The fourth published vector (N=1048576, r=8, p=1) is skipped — it needs 1 GiB of
+// The fourth published vector (N=1048576, r=8, p=1) is skipped - it needs 1 GiB of
 // scratch memory, which is a reasonable production setting and an unreasonable unit test.
 func TestScryptRFC7914Vectors(t *testing.T) {
 	cases := []struct {

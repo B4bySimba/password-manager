@@ -33,7 +33,7 @@ var ErrScryptParams = errors.New("crypto: invalid scrypt parameters")
 //
 // The two PBKDF2 calls use a single iteration on purpose: they are there to spread the
 // password over the working buffer and to collect the result, not to add cost. All of
-// the cost lives in ROMix, and it is *memory* cost — which is what makes scrypt
+// the cost lives in ROMix, and it is *memory* cost - which is what makes scrypt
 // expensive to attack with custom hardware, where memory is the scarce resource and
 // raw hash throughput is not.
 func Scrypt(password, salt []byte, n, r, p, keyLen int) ([]byte, error) {
@@ -147,7 +147,7 @@ func blockMix(b, y []uint32, r int) {
 
 // salsa208 is the Salsa20 core reduced to 8 rounds, operating in place.
 //
-// Salsa20/8 is deliberately *weak* by cipher standards — scrypt does not need collision
+// Salsa20/8 is deliberately *weak* by cipher standards - scrypt does not need collision
 // resistance from it, only that it be fast and non-linear. The security comes from the
 // memory access pattern in roMix; using a strong hash here would just make the honest
 // user pay more than the attacker.

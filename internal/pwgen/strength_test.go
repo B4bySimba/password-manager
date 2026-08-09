@@ -6,7 +6,7 @@ import (
 )
 
 // The estimator's job is ordering, not precision. These cases assert the ordering an
-// attacker's guess list actually has — which is the thing naive entropy gets wrong.
+// attacker's guess list actually has - which is the thing naive entropy gets wrong.
 func TestEstimateScores(t *testing.T) {
 	cases := []struct {
 		password  string
@@ -32,7 +32,7 @@ func TestEstimateScores(t *testing.T) {
 		t.Run(tc.password, func(t *testing.T) {
 			got := Estimate(tc.password)
 			if got.Score != tc.wantScore {
-				t.Errorf("Estimate(%q).Score = %d (%s, %.1f bits), want %d — %s\npatterns: %v",
+				t.Errorf("Estimate(%q).Score = %d (%s, %.1f bits), want %d - %s\npatterns: %v",
 					tc.password, got.Score, got.Label, got.Entropy, tc.wantScore, tc.reason, got.Patterns)
 			}
 		})
@@ -64,7 +64,7 @@ func TestEstimateOverratesWordsOutsideTheBundledLists(t *testing.T) {
 	// "troubador" is not in either list, so it is charged as random characters.
 	s := Estimate("Tr0ub4dor&3")
 	if s.Score < 4 {
-		t.Fatalf("Tr0ub4dor&3 now scores %d — if the wordlist grew, update the README's "+
+		t.Fatalf("Tr0ub4dor&3 now scores %d - if the wordlist grew, update the README's "+
 			"stated limitation and this test", s.Score)
 	}
 	if len(s.Patterns) != 1 || !strings.Contains(s.Patterns[0], "random") {
@@ -89,7 +89,7 @@ func TestLeetSubstitutionIsReversedAgainstBothLists(t *testing.T) {
 				t.Fatalf("Estimate(%q) saw %v, expected %q", tc.password, s.Patterns, tc.want)
 			}
 			if s.Score > 0 {
-				t.Errorf("Estimate(%q).Score = %d, want 0 — leet on a known word is not protection", tc.password, s.Score)
+				t.Errorf("Estimate(%q).Score = %d, want 0 - leet on a known word is not protection", tc.password, s.Score)
 			}
 		})
 	}
@@ -116,7 +116,7 @@ func TestPatternDetection(t *testing.T) {
 		{"c4ny0n", "leet"},
 		{"abcdef", "sequence"},
 		{"zxcvbnm", "keyboard-walk"},
-		// "asdfghjkl" is in the leaked-password list, so it is priced there instead —
+		// "asdfghjkl" is in the leaked-password list, so it is priced there instead -
 		// a cheaper and more accurate guess than treating it as an adjacency walk.
 		{"asdfghjkl", "common-password"},
 		{"abababab", "repeat"},
@@ -168,7 +168,7 @@ func TestEmptyPasswordIsHandled(t *testing.T) {
 
 func TestEstimateHandlesUnusualInput(t *testing.T) {
 	// Non-ASCII, very long, and single-character inputs must not panic or index out of
-	// range — the matchers all slice by byte offset.
+	// range - the matchers all slice by byte offset.
 	for _, p := range []string{"a", "€", "🔐🔐🔐", strings.Repeat("x", 5000), "\x00\x01\x02", "  "} {
 		s := Estimate(p)
 		if s.Guesses < 1 {

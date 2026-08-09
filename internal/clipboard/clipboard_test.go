@@ -149,7 +149,7 @@ func TestCopyWithTimeoutClears(t *testing.T) {
 	}
 }
 
-// Ctrl-C must clear immediately rather than leaving the secret behind — the user is
+// Ctrl-C must clear immediately rather than leaving the secret behind - the user is
 // abandoning the operation, and the wrong default there is dangerous.
 func TestCancellationClearsImmediately(t *testing.T) {
 	cb, fake := newFake(true)

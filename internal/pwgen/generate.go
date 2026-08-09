@@ -53,7 +53,7 @@ func DefaultOptions() Options {
 // skew in the search space.
 //
 // RequireEach places one character per class and then shuffles the whole string. Placing
-// the guaranteed characters at fixed positions — the common shortcut — means position 0
+// the guaranteed characters at fixed positions - the common shortcut - means position 0
 // is always lowercase, which is information an attacker gets for free.
 func Generate(o Options) (string, error) {
 	if o.Length <= 0 {
@@ -198,7 +198,7 @@ func shuffle(b []byte) error {
 // Passphrase returns `words` words joined by sep, optionally capitalised and with a
 // digit appended.
 //
-// Entropy is words × log2(len(wordlist)) — and *only* that. The capitalisation and the
+// Entropy is words × log2(len(wordlist)) - and *only* that. The capitalisation and the
 // trailing digit add a handful of bits at most, because an attacker knows the generator's
 // rules. They exist to satisfy composition requirements, not to add security, and
 // Entropy() reports them at their true worth rather than the flattering one.
@@ -241,7 +241,7 @@ func PassphraseEntropy(words int, appendDigit bool) float64 {
 // GeneratedEntropy reports the entropy of a Generate result, in bits.
 //
 // This is length × log2(alphabet), which is correct only because the password is
-// machine-generated and uniform. Do not apply it to a human-chosen password — that is
+// machine-generated and uniform. Do not apply it to a human-chosen password - that is
 // what Estimate is for, and the gap between the two numbers is usually enormous.
 func GeneratedEntropy(o Options) float64 {
 	classes, err := o.classes()

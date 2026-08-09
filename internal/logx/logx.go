@@ -2,7 +2,7 @@
 // instead of log/slog, for one reason specific to this project: a password manager must
 // never log a secret, so the logger is small enough to audit in one sitting.
 //
-// Everything goes to stderr. Stdout belongs to the user's data — `vault get x --raw`
+// Everything goes to stderr. Stdout belongs to the user's data - `vault get x --raw`
 // piped into another command must not receive a log line.
 package logx
 

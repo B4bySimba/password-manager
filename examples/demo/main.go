@@ -44,7 +44,7 @@ func run() error {
 	path := filepath.Join(dir, "vault.gv")
 	log := logx.Discard()
 
-	section(1, "KEY DERIVATION — scrypt, hand-written, RFC 7914")
+	section(1, "KEY DERIVATION - scrypt, hand-written, RFC 7914")
 	if err := demoKDF(); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func run() error {
 	defer v.Close()
 	fmt.Printf("  created %s with N=%d r=%d p=%d\n", filepath.Base(path), v.Params().N, v.Params().R, v.Params().P)
 
-	section(3, "ADDING ENTRIES — a login, a note and a card")
+	section(3, "ADDING ENTRIES - a login, a note and a card")
 	ids, err := demoEntries(v)
 	if err != nil {
 		return err
@@ -83,10 +83,10 @@ func run() error {
 		return err
 	}
 
-	section(8, "STRENGTH ESTIMATION — why entropy formulas lie")
+	section(8, "STRENGTH ESTIMATION - why entropy formulas lie")
 	demoStrength()
 
-	section(9, "TOTP — RFC 6238")
+	section(9, "TOTP - RFC 6238")
 	if err := demoTOTP(v, ids["totp"]); err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func run() error {
 		return err
 	}
 
-	section(11, "BREACH CHECKING — k-anonymity, offline by default")
+	section(11, "BREACH CHECKING - k-anonymity, offline by default")
 	demoHIBP()
 
 	section(12, "EXPORT AND IMPORT")
@@ -458,7 +458,7 @@ func demoHIBP() {
 
 	res, err := hibp.New(false).Check(context.Background(), "password")
 	fmt.Printf("\n  with checking disabled: breached=%v, err=%v\n", res.Breached, err)
-	fmt.Println("  Disabled returns an error, never \"not breached\" — confusing \"we did not")
+	fmt.Println("  Disabled returns an error, never \"not breached\" - confusing \"we did not")
 	fmt.Println("  look\" with \"we looked and it was clean\" is how a bad password survives.")
 }
 
@@ -505,6 +505,6 @@ func demoPortable(v *vault.Vault, dir string) error {
 		return err
 	}
 	fmt.Printf("\n  encrypted backup: %s\n", filepath.Base(backupPath))
-	fmt.Println("  A byte copy of the ciphertext — it needs no password, so it can run from cron.")
+	fmt.Println("  A byte copy of the ciphertext - it needs no password, so it can run from cron.")
 	return nil
 }

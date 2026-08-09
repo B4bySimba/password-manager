@@ -4,7 +4,7 @@ package pwgen
 // every credential dump. Order is the point: index 0 is what an attacker tries first, so
 // the estimator can price "password" at 1 guess rather than at 26^8.
 //
-// It is short — 120 entries against the millions in a real cracking list — which means
+// It is short - 120 entries against the millions in a real cracking list - which means
 // Estimate will overrate a password that is common but not listed here. That is a data
 // limitation, not a design one, and the README says so rather than implying full coverage.
 var CommonPasswords = []string{

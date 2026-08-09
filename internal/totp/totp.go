@@ -1,7 +1,7 @@
 // Package totp implements RFC 4226 (HOTP) and RFC 6238 (TOTP).
 //
 // A password manager that stores the second factor next to the first is not offering
-// two-factor authentication — it is offering one factor in two formats. That is a real
+// two-factor authentication - it is offering one factor in two formats. That is a real
 // tradeoff and it is spelled out in the threat model; the feature exists because the
 // alternative most people choose is SMS.
 package totp
@@ -24,7 +24,7 @@ import (
 )
 
 // Algorithm names the HMAC hash. SHA1 remains the default because it is what
-// authenticator apps and virtually every server actually implement — HMAC-SHA1's
+// authenticator apps and virtually every server actually implement - HMAC-SHA1's
 // collision weaknesses do not apply to its use as a MAC here.
 type Algorithm string
 
@@ -119,7 +119,7 @@ func (c Config) SecondsRemaining(at time.Time) int {
 
 // Verify checks a submitted code against the window [-skew, +skew] of time steps.
 //
-// The comparison is constant time and — importantly — every candidate step is evaluated
+// The comparison is constant time and - importantly - every candidate step is evaluated
 // before returning. Returning early on a match would leak, through timing, roughly how
 // far the client's clock has drifted. That is a small leak, but it is free to avoid.
 func (c Config) Verify(code string, at time.Time, skew int) (bool, error) {

@@ -180,7 +180,7 @@ func TestSessionFilesAreOwnerOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	if perm := fileInfo.Mode().Perm(); perm != FileMode {
-		t.Errorf("session file mode is %v, want %v — it holds a live key", perm, FileMode)
+		t.Errorf("session file mode is %v, want %v - it holds a live key", perm, FileMode)
 	}
 
 	dirInfo, err := os.Stat(s.Dir)

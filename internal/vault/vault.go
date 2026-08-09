@@ -46,7 +46,7 @@ type Vault struct {
 	now func() time.Time
 }
 
-// Create initialises a new vault file. It fails if the file already exists — silently
+// Create initialises a new vault file. It fails if the file already exists - silently
 // overwriting a password vault is not a recoverable mistake.
 func Create(path, password string, params KDFParams, log *logx.Logger) (*Vault, error) {
 	if err := params.validate(); err != nil {
@@ -205,7 +205,7 @@ type payload struct {
 
 // Save writes the vault atomically: a temp file in the same directory, fsync'd, then
 // renamed over the target. Rename within a directory is atomic on POSIX, so a crash
-// leaves either the old vault or the new one — never a half-written file, which for a
+// leaves either the old vault or the new one - never a half-written file, which for a
 // password vault means "every credential you own, gone".
 func (v *Vault) Save() error {
 	if v.locked {
@@ -227,7 +227,7 @@ func (v *Vault) Save() error {
 		payloadNon: payloadNonce,
 	}
 
-	// The payload length is part of the header, and the header is the AAD — so it has to
+	// The payload length is part of the header, and the header is the AAD - so it has to
 	// be known before sealing. GCM adds exactly TagSize bytes, which is why this works.
 	h.payloadLen = uint64(len(plaintext) + crypto.TagSize)
 	raw := h.encode(v.macKey)
@@ -314,7 +314,7 @@ func (v *Vault) rewrap(password string) error {
 }
 
 // RotateMaster changes the master password. Because content is encrypted under the
-// random vault key, this rewraps 48 bytes and touches no entry — rotation is O(1) in the
+// random vault key, this rewraps 48 bytes and touches no entry - rotation is O(1) in the
 // number of credentials, and it takes the same time for a vault of 5 or 5000.
 //
 // A fresh salt is generated too: reusing the salt across passwords would let an attacker
@@ -448,7 +448,7 @@ func (v *Vault) Delete(id string) error {
 }
 
 // List returns metadata for every entry, sorted by title then id so output is stable
-// across runs — a listing that reorders itself is unusable in a diff or a script.
+// across runs - a listing that reorders itself is unusable in a diff or a script.
 func (v *Vault) List() ([]Metadata, error) {
 	if v.locked {
 		return nil, ErrLocked
@@ -480,7 +480,7 @@ func (v *Vault) indexOf(id string) (int, error) {
 
 // Resolve accepts an id, an id prefix, or an exact (case-insensitive) title, so the CLI
 // can take `vault get github` instead of a hex string. An ambiguous prefix is an error
-// rather than a guess — picking one silently would eventually reveal the wrong password.
+// rather than a guess - picking one silently would eventually reveal the wrong password.
 func (v *Vault) Resolve(query string) (string, error) {
 	if v.locked {
 		return "", ErrLocked

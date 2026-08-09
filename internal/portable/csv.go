@@ -2,7 +2,7 @@
 // backups.
 //
 // CSV export writes every password in plaintext. That is not a flaw to be engineered
-// away — it is the only format other managers read — but it does mean the function
+// away - it is the only format other managers read - but it does mean the function
 // refuses to run without an explicit acknowledgement, and the CLI prints where the file
 // landed so it can be deleted.
 package portable
@@ -113,7 +113,7 @@ type ImportReport struct {
 // Import reads CSV and adds entries. It does not save; the caller decides whether to
 // commit, which means a malformed file cannot half-write a vault.
 //
-// Rows missing a title are skipped rather than imported under a placeholder — a vault
+// Rows missing a title are skipped rather than imported under a placeholder - a vault
 // full of "Untitled" is worse than a report saying four rows were unusable.
 func Import(v *vault.Vault, r io.Reader) (ImportReport, error) {
 	cr := csv.NewReader(r)
@@ -199,7 +199,7 @@ func inferKind(declared, password, note string) vault.Kind {
 }
 
 // Backup copies the vault file itself. The copy is already encrypted with the same key,
-// so this is a byte copy rather than a re-encryption — and crucially it does not require
+// so this is a byte copy rather than a re-encryption - and crucially it does not require
 // the vault to be unlocked, which means a backup can be scripted without a password
 // sitting in a cron job.
 func Backup(vaultPath, dir string, now time.Time) (string, error) {

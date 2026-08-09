@@ -268,7 +268,7 @@ func zero(b []byte) {
 	}
 }
 
-const usage = `vault — a zero-knowledge password manager
+const usage = `vault - a zero-knowledge password manager
 
 usage: vault [global flags] <command> [flags] [args]
 

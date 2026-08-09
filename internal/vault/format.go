@@ -85,7 +85,7 @@ type KDFParams struct {
 // cost is the budget; the memory figure is what actually hurts an attacker with GPUs.
 func DefaultParams() KDFParams { return KDFParams{N: 1 << 16, R: 8, P: 1} }
 
-// FastParams are for tests only — they make scrypt cheap, which is exactly what you do
+// FastParams are for tests only - they make scrypt cheap, which is exactly what you do
 // not want in production. Named to be embarrassing to use by accident.
 func FastParams() KDFParams { return KDFParams{N: 1 << 8, R: 8, P: 1} }
 

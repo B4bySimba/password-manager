@@ -93,7 +93,7 @@ func TestWrongPasswordIsDistinguishableFromCorruption(t *testing.T) {
 }
 
 // Every field of the header is authenticated. This walks each one, flips a bit, and
-// requires that opening fails — a downgrade of the version byte or a weakening of N must
+// requires that opening fails - a downgrade of the version byte or a weakening of N must
 // not produce a readable vault.
 func TestTamperingWithAnyHeaderFieldIsDetected(t *testing.T) {
 	v := newVault(t)
@@ -143,7 +143,7 @@ func TestTamperingWithAnyHeaderFieldIsDetected(t *testing.T) {
 }
 
 // The salt is inside the MAC, so changing it makes the derived MAC key wrong and the
-// vault reports a wrong password — the right answer, since the file no longer
+// vault reports a wrong password - the right answer, since the file no longer
 // corresponds to any password the user knows.
 func TestWeakenedParametersDoNotYieldAReadableVault(t *testing.T) {
 	v := newVault(t)
@@ -525,7 +525,7 @@ func TestListIsSortedAndDecryptsNothing(t *testing.T) {
 		}
 	}
 
-	// Metadata carries no secret field at all — the type system is the guarantee here,
+	// Metadata carries no secret field at all - the type system is the guarantee here,
 	// so this asserts the JSON shape a caller would see.
 	v.Lock()
 	if _, err := v.List(); !errors.Is(err, ErrLocked) {
