@@ -4,5 +4,6 @@
 *.csv
 .env
 
-vault
+# Anchored: an unanchored `vault` pattern also matches internal/vault/.
+/vault
 /dist/
